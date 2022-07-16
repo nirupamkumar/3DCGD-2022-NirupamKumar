@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public float moveSensitivity = 100f;
+    [SerializeField] private float moveSensitivity = 100f;
+    [SerializeField] private Transform playerBody;
+
+    private float xRotation = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -15,7 +18,13 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float moveX = Input.GetAxis("Mouse X");
-        float moveY = Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X") * moveSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * moveSensitivity * Time.deltaTime;
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 }
