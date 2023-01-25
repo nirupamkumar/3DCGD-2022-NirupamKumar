@@ -7,24 +7,19 @@ public class FPSController : MonoBehaviour
     #region properties
 
     private CharacterController characterController;
-    public AudioSource audioSource;
 
     [Header("--Player Movement--")]
-    [SerializeField] private float _moveSpeed = 12f;
-    public AudioClip footSteps;
+    [SerializeField] private float _moveSpeed = 4f;
+    [SerializeField] private float _sprintSpeed = 8f;
 
-    [Header("--Gravity--")]
-    public float gravity = -9.81f;
-    private Vector3 velocity;
-
-    [Header("--Jump--")]
-    [SerializeField] private float _jumpPower;
-    private bool _isGround;
-    public LayerMask groundLayer;
 
     [Header("--Dash--")]
     [SerializeField] private float _dashSpeed;
     [SerializeField] private float _dashTime;
+    
+
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode dashKey = KeyCode.F;
 
     public Vector3 _moveDirection;
 
@@ -38,16 +33,13 @@ public class FPSController : MonoBehaviour
     void Update()
     {
         Movement();
+        Sprint();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(dashKey))
         {
             StartCoroutine(Dash());
         }
+
     }
 
     void Movement()
@@ -60,26 +52,30 @@ public class FPSController : MonoBehaviour
 
         characterController.Move(move * _moveSpeed * Time.deltaTime);
 
-        if(Input.GetKeyDown(KeyCode.W))
-            audioSource.PlayOneShot(footSteps);
+        _moveDirection = move;
     }
 
-
-    #region Jump
-    void Jump()
+    void Sprint()
     {
-        
+        if(Input.GetKey(sprintKey))
+        {
+            _moveSpeed= _sprintSpeed;
+        }
+        else
+        {
+            _moveSpeed = 4f;
+        }
     }
-    void GroundCheck()
-    {
 
-    }
-    #endregion
-
-
+    
     IEnumerator Dash()
     {
-        //characterController.Move( move direction * dashspeed * Time.deltaTime);
-        yield return null;
+        float startTime = Time.time;
+
+        while (Time.time < startTime + _dashTime)
+        {
+            characterController.Move(_moveDirection * _dashSpeed * Time.deltaTime);
+            yield return null;
+        }
     }
 }
