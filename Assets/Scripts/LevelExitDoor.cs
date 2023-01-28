@@ -18,7 +18,9 @@ public class LevelExitDoor : MonoBehaviour
         yield return new WaitForSecondsRealtime(_levelLoadDelay);
         Time.timeScale = 1f;
 
-        var currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex + 1);
+        SceneManager.LoadScene(0);
+
+        //var currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        //SceneManager.LoadScene(currentSceneIndex + 1);
     }
 }

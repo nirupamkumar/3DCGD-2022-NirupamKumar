@@ -18,42 +18,63 @@ public class FPSController : MonoBehaviour
     [SerializeField] private float _dashTime;
     
 
-    public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode dashKey = KeyCode.F;
+    private KeyCode sprintKey = KeyCode.LeftShift;
+    private KeyCode dashKey = KeyCode.F;
 
     public Vector3 _moveDirection;
+
+    private float _gravity = -9.81f;
+    private float _gravityMultiplier = 3f;
+    private float _velocity;
 
     #endregion
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        AudioManager.SingletonManager.PlayMusic(MusicClip.Background);
+        AudioManager.SingletonManager.PlaySfx(SfxClip.Walk);
     }
 
     void Update()
     {
         Movement();
         Sprint();
+        ApplyGravity();
 
         if (Input.GetKeyDown(dashKey))
         {
             StartCoroutine(Dash());
         }
-
     }
 
     void Movement()
     {
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-
-        //Vector3 move = new Vector3(moveX, 0, moveZ);
+       
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
-
         characterController.Move(move * _moveSpeed * Time.deltaTime);
 
         _moveDirection = move;
+        //_moveDirection = new Vector3(move.x, 0f, move.z);
     }
+
+    void ApplyGravity()
+    {
+        if(IsGrounded() && _velocity < 0f)
+        {
+            _velocity = -1f;
+        }
+        else
+        {
+            _velocity += _gravity * _gravityMultiplier * Time.deltaTime;
+        }
+
+        _moveDirection.y = _velocity;
+    }
+
+    private bool IsGrounded() => characterController.isGrounded;
 
     void Sprint()
     {

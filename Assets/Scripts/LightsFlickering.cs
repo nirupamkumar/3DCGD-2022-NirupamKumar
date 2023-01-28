@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class LightsFlickering : MonoBehaviour
 {
-    public Light spotLight;
+    private Light spotLight;
 
-    // Start is called before the first frame update
-    void Start()
+    public float minWaitTime;
+    public float maxWaitTime;
+
+    private void Start()
     {
-        
+        spotLight= GetComponent<Light>();
+        StartCoroutine(Flickering());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator Flickering()
     {
-        
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(minWaitTime, maxWaitTime));
+            spotLight.enabled = ! spotLight.enabled;
+        }
     }
 }

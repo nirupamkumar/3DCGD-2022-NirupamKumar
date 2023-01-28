@@ -11,7 +11,6 @@ public class PauseWindow : MonoBehaviour
     private void Start()
     {
         optionWindow.SetActive(false);
-        
     }
 
     private void Update()
