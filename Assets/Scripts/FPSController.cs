@@ -8,12 +8,12 @@ public class FPSController : MonoBehaviour
 
     private CharacterController characterController;
 
-    [Header("--Player Movement--")]
+    [Header("Player Movement")]
     [SerializeField] private float _moveSpeed = 4f;
     [SerializeField] private float _sprintSpeed = 8f;
 
 
-    [Header("--Dash--")]
+    [Header("Dash")]
     [SerializeField] private float _dashSpeed;
     [SerializeField] private float _dashTime;
     
@@ -24,28 +24,32 @@ public class FPSController : MonoBehaviour
     public Vector3 _moveDirection;
 
     private float _gravity = -9.81f;
-    private float _gravityMultiplier = 3f;
-    private float _velocity;
+    private float _gravityMultiplier = 20f;
 
     #endregion
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        AudioManager.SingletonManager.PlayMusic(MusicClip.Background);
-        AudioManager.SingletonManager.PlaySfx(SfxClip.Walk);
+        //AudioManager.SingletonManager.PlayMusic(MusicClip.Background);
     }
 
     void Update()
     {
         Movement();
         Sprint();
-        ApplyGravity();
+       
 
         if (Input.GetKeyDown(dashKey))
         {
             StartCoroutine(Dash());
+            AudioManager.SingletonManager.PlaySfx(SfxClip.Dash);
         }
+
+        //if (Input.GetKeyDown(KeyCode.W))
+        //{
+        //    AudioManager.SingletonManager.PlaySfx(SfxClip.Walk);
+        //}
     }
 
     void Movement()
@@ -54,25 +58,15 @@ public class FPSController : MonoBehaviour
         float moveZ = Input.GetAxis("Vertical");
        
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
+        move.y += _gravity* _gravityMultiplier * Time.deltaTime;
         characterController.Move(move * _moveSpeed * Time.deltaTime);
 
+        
         _moveDirection = move;
         //_moveDirection = new Vector3(move.x, 0f, move.z);
     }
 
-    void ApplyGravity()
-    {
-        if(IsGrounded() && _velocity < 0f)
-        {
-            _velocity = -1f;
-        }
-        else
-        {
-            _velocity += _gravity * _gravityMultiplier * Time.deltaTime;
-        }
-
-        _moveDirection.y = _velocity;
-    }
+    
 
     private bool IsGrounded() => characterController.isGrounded;
 
@@ -81,6 +75,7 @@ public class FPSController : MonoBehaviour
         if(Input.GetKey(sprintKey))
         {
             _moveSpeed= _sprintSpeed;
+            //AudioManager.SingletonManager.PlaySfx(SfxClip.Sprint, true);
         }
         else
         {

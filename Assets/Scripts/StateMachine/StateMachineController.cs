@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class StateMachineController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Animator animator;
+    private Transform target;
+
+    private void Start()
     {
-        
+        animator = GetComponent<Animator>();
+        target = GameObject.Find("Player").transform;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        var distance = Vector3.Distance(transform.position, target.position);
+        animator.SetFloat("distanceFromPlayer", distance);
     }
 }

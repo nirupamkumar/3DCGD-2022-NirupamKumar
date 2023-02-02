@@ -8,10 +8,10 @@ using UnityEngine.SceneManagement;
 public class PlayerHealth : MonoBehaviour
 {
     public int health = 100;
-    private int maxHealth = 100;
+    //private int maxHealth = 100;
     public TextMeshProUGUI healthTextUI;
 
-    private int zombieDamage = 25;
+    private int zombieDamage = 20;
 
     private int sceneIndex = 1;
 
@@ -20,7 +20,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-        health = maxHealth;
+        health = 100;
         damageBlood.SetActive(false); 
         deathScreen.SetActive(false);
     }
@@ -43,6 +43,7 @@ public class PlayerHealth : MonoBehaviour
         if(other.gameObject.tag == "Enemy")
         {
             health -= zombieDamage;
+            AudioManager.SingletonManager.PlaySfx(SfxClip.DamageTaken);
             damageBlood.SetActive(true);
             StartCoroutine(DamageBloodDelay());
         }
@@ -62,7 +63,7 @@ public class PlayerHealth : MonoBehaviour
 
     IEnumerator WaitRestart()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         PlayerDestroy();
     }
 
