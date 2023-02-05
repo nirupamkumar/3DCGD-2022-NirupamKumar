@@ -36,6 +36,7 @@ public class AudioManager
                 var audioManagerGOSfx = new GameObject();
                 audioManagerGOSfx.name = "Sfx AudioManager";
                 var audioSourceComponentSfx = audioManagerGOSfx.AddComponent<AudioSource>();
+                //audioSourceComponentSfx.loop = true;
                 GameObject.DontDestroyOnLoad(audioManagerGOSfx);
                 _singletonManager.audioSourceSfx = audioSourceComponentSfx;
 
@@ -80,8 +81,8 @@ public class AudioManager
     public void PlaySfx(SfxClip sfxClip, bool loopActive)
     {
         audioSourceSfx.loop = loopActive;
-        audioSourceSfx.clip = audioRepository.ClipsForSfx(sfxClip);
-        audioSourceSfx.Play();
+        //audioSourceSfx.clip = audioRepository.ClipsForSfx(sfxClip);
+        audioSourceSfx.PlayOneShot(audioRepository.ClipsForSfx(sfxClip));
     }
 
     //loop active for 3D audios
@@ -130,12 +131,12 @@ public class AudioManager
 
 
     //Music is off. When this audio is in full volume - SFX
-    public void PlaySfxVolume(SfxClip sfxClip, GameObject gameobjectPos, float min, float max)
+    public void PlaySfxVolume(SfxClip sfxClip, float volume)
     {
-        var go = gameobjectPos.AddComponent<AudioSource>();
-        go.PlayOneShot(audioRepository.ClipsForSfx(sfxClip));
-        
-  
+        audioSourceSfx.volume = volume;
+        audioSourceMusic.PlayOneShot(audioRepository.ClipsForSfx(sfxClip));
+
+
         if (audioSourceSfx.volume == 1)
         {
             audioSourceMusic.mute = true;

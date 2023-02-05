@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioRepository : MonoBehaviour
 {
-    //public AudioClipArray[] musicSounds, sfxSounds;
+    public AudioClipArray[] musicSounds, sfxSounds;
 
     [Header("Music")]
     public AudioClip backgroundMusic;

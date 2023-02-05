@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -18,11 +19,21 @@ public class PlayerHealth : MonoBehaviour
     public GameObject damageBlood;
     public GameObject deathScreen;
 
+    //PostProcessing
+    public PostProcessVolume processVolume;
+    Vignette vignette;
+    private float vignetterIntensity;
+    ColorGrading colorGrading;
+
+
     private void Start()
     {
         health = 100;
         damageBlood.SetActive(false); 
         deathScreen.SetActive(false);
+        processVolume.profile.TryGetSettings(out vignette);
+        processVolume.profile.TryGetSettings(out colorGrading);
+        
     }
 
     private void Update()
@@ -35,6 +46,17 @@ public class PlayerHealth : MonoBehaviour
             damageBlood.SetActive(false);
             deathScreen.SetActive(true);
         }
+
+        if (health <= 20)
+        {
+            colorGrading.active = true;
+        }
+        else
+        {
+            colorGrading.active = false;
+        }
+
+        vignette.intensity.value = vignetterIntensity;
     }
 
 
@@ -43,11 +65,14 @@ public class PlayerHealth : MonoBehaviour
         if(other.gameObject.tag == "Enemy")
         {
             health -= zombieDamage;
+            vignetterIntensity += .2f;
             AudioManager.SingletonManager.PlaySfx(SfxClip.DamageTaken);
             damageBlood.SetActive(true);
             StartCoroutine(DamageBloodDelay());
         }
     }
+
+    
 
     IEnumerator DamageBloodDelay()
     {

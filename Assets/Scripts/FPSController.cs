@@ -46,10 +46,10 @@ public class FPSController : MonoBehaviour
             AudioManager.SingletonManager.PlaySfx(SfxClip.Dash);
         }
 
-        //if (Input.GetKeyDown(KeyCode.W))
-        //{
-        //    AudioManager.SingletonManager.PlaySfx(SfxClip.Walk);
-        //}
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
+        {
+            AudioManager.SingletonManager.PlaySfx(SfxClip.Walk);
+        }
     }
 
     void Movement()
@@ -94,4 +94,5 @@ public class FPSController : MonoBehaviour
             yield return null;
         }
     }
+
 }
